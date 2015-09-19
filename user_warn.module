@@ -1,0 +1,88 @@
+<?php
+
+
+/**
+* @file
+* User Warn Module File
+*
+* This module allows site administrators to send a stock warning e-mail
+* to a specified user or users through the admin interface.  Administrators
+* can configure the default e-mail including token replacement.
+*/
+
+
+/**
+* Implements hook_help().
+*/
+function user_warn_help($path, $arg) {
+  if ($path == 'admin/help#user_warn') {
+  	return t('User Warn allows site administrators to send a standard e-mail to site users to notify them of improper behavior.');
+  }
+}
+
+
+/**
+* Implements hook_menu().
+*/
+function user_warn_menu() {
+  $items = array();
+  $items['admin/config/people/user_warn'] = array(
+    'title' => 'User Warn',
+    'description' => 'Configuration for the User Warn module.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('user_warn_form'),
+    'access arguments' => array('administer users'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['user/%/warn'] = array(
+    'title' => 'Warn',
+    'description' => 'send e-mail to a user about improper site behavior',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('user_warn_confirm_form', 1),
+    'access arguments' => array('administer users'),
+    'type' => MENU_LOCAL_TASK,
+  );
+  return $items;
+}
+
+
+/**
+*  Form Builder: Create and display the User Warn configuration settings form.
+*/
+function user_warn_form($form, &$form_state) {
+  // Text field for the e-mail subject.
+  $form['user_warn_e-mail_subject'] = array(
+    '#type' =>'textfield',
+    '#title' => t('Warning e-mail subject'),
+    '#description' => t('the subject of the email that will be sent to users.'),
+    '#size' => 40,
+    '#maxlength' => 120,
+    '#required' => TRUE,
+  );
+  // Textarea for the body of the e-mail
+  $form['user_warn_e-mail_text'] = array(
+    '#type' => 'textarea',
+    '#rows' => 10,
+    '#columns' => 40,
+    '#title' => t('Warning e-mail text'),
+    '#required' => TRUE,
+    '#description' => t('The text of the e-mail which will be sent to users.'),
+  );
+  // Checkbox to indicate if admin should be sent a Bcc on e-mails.
+  $form['user_warn_bcc'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Bcc admin on all e-mails'),
+    '#description' => t('Indicates whether the site admin (as set in site configuration) should be copied on all warning e-emails.'),
+  );
+  // Submit Button
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save settings'),
+  );
+  return $form;
+}
+
+
+
+
+

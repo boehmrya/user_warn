@@ -1,0 +1,4 @@
+name = User Warn
+description = Exposes an admin interface to send behavior warning e-mails to users.
+core = 7.x
+files[] = user_warn.module
